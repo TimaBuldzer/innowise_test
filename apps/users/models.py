@@ -18,3 +18,13 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user} {self.role}'
+
+
+class Cart(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'carts'
+
+    def __str__(self):
+        return f'{self.profile} cart'

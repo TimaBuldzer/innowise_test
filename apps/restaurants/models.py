@@ -17,13 +17,13 @@ class Restaurant(models.Model):
 
 class Employee(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    user = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'employees'
 
     def __str__(self):
-        return f'{self.user}'
+        return f'{self.profile}'
 
 
 class Dish(models.Model):
