@@ -25,6 +25,13 @@ class Employee(models.Model):
     def __str__(self):
         return f'{self.user}'
 
-# class Dish(models.Model):
-#     name = models.CharField(max_length=250)
-#     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+
+class Dish(models.Model):
+    name = models.CharField(max_length=250)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'dishes'
+
+    def __str__(self):
+        return f'{self.name} - {self.restaurant}'
