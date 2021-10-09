@@ -1,5 +1,7 @@
 from django.db import models
 
+from apps.users.models import Profile
+
 
 class Restaurant(models.Model):
     name = models.CharField(max_length=250)
@@ -11,6 +13,17 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.address}'
+
+
+class Employee(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    user = models.OneToOneField(Profile, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'employees'
+
+    def __str__(self):
+        return f'{self.user}'
 
 # class Dish(models.Model):
 #     name = models.CharField(max_length=250)
