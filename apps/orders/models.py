@@ -1,7 +1,4 @@
 from django.db import models
-from mptt.fields import TreeForeignKey
-from mptt.models import MPTTModel
-
 from apps.restaurants.models import Dish, Restaurant
 from apps.users.models import Profile
 
@@ -20,11 +17,11 @@ class OrderStatus(models.TextChoices):
     REJECTED = 'rejected', 'Rejected'
 
 
-class Order(MPTTModel):
+class Order(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, null=True, on_delete=models.CASCADE)
-    parent = TreeForeignKey('self', on_delete=models.CASCADE)
     status = models.CharField(max_length=25, default=OrderStatus.NEW, choices=OrderStatus.choices)
+    courier = models.ForeignKey(Profile, related_name='courier_orders', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         db_table = 'orders'
@@ -32,18 +29,8 @@ class Order(MPTTModel):
     def __str__(self):
         return f'Order # {self.id}'
 
-    def get_price(self):
-        if self.parent:
-            total_price = 0
-            for order in self.order_set.all():
-                total_price += self.get_order_price(order)
-            return total_price
-        else:
-            return self.get_order_price(self)
-
-    @staticmethod
-    def get_order_price(obj):
-        return obj.orderitem.dish_price * obj.orderitem.dish_quantity
+    def get_order_price(self):
+        return self.orderitem.dish_price * self.orderitem.dish_quantity
 
 
 class OrderItem(models.Model):
