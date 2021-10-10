@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-
 class ProfileRole(models.TextChoices):
     USER = 'user', 'User'
     MANAGER = 'manager', 'Manager'
@@ -41,3 +40,15 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f'{self.cart} : {self.dish}'
+
+
+class Report(models.Model):
+    reported_profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    order = models.ForeignKey('orders.Order', on_delete=models.CASCADE)
+    created_dt = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'reports'
+
+    def __str__(self):
+        return f'{self.reported_profile} - {self.order} - {self.created_dt}'
