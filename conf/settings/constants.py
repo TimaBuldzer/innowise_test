@@ -1,0 +1,1 @@
+REPORT_EXPIRE_TIME = 5 # in minutes

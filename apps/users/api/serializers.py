@@ -1,7 +1,14 @@
+import datetime
+import time
+
+from django.http import Http404
+
 from apps.restaurants.api.serializers import DishSerializer
 from apps.users import models as users_models
 from rest_framework import serializers
 
+from conf.settings.constants import REPORT_EXPIRE_TIME
+import pytz
 
 class CartSerializer(serializers.ModelSerializer):
     cart_items = serializers.SerializerMethodField()
@@ -34,3 +41,25 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     def get_dish(self, obj):
         return DishSerializer(obj.dish, read_only=True).data
+
+
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = users_models.Report
+        fields = '__all__'
+        extra_kwargs = {
+            'reported_profile': {'read_only': True}
+        }
+        depth = 1
+
+    def create(self, validated_data):
+        order = validated_data.get('order')
+        order_date = time.mktime(order.delivered_dt.astimezone(pytz.timezone('Europe/Minsk')).timetuple())
+        mins = (datetime.datetime.now().timestamp() - order_date) / 60
+        if mins > REPORT_EXPIRE_TIME:
+            raise Http404
+        report = users_models.Report.objects.create(
+            order=order,
+            reported_profile=order.courier
+        )
+        return report

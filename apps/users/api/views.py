@@ -1,6 +1,6 @@
 from apps.users import models as users_models
 from apps.users.api import serializers as users_serializers
-from rest_framework.generics import RetrieveAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import RetrieveAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView
 
 
 class CartRetrieveApiView(RetrieveAPIView):
@@ -19,3 +19,8 @@ class CartItemRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView):
     queryset = users_models.CartItem
     serializer_class = users_serializers.CartItemSerializer
     http_method_names = ['get', 'put', 'delete']
+
+
+class ReportListCreateApiView(ListCreateAPIView):
+    serializer_class = users_serializers.ReportSerializer
+    queryset = users_models.Report.objects.all()
