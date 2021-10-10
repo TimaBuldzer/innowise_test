@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+
 class ProfileRole(models.TextChoices):
     USER = 'user', 'User'
     MANAGER = 'manager', 'Manager'

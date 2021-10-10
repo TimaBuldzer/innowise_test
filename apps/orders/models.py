@@ -30,11 +30,14 @@ class Order(models.Model):
         return f'Order # {self.id}'
 
     def get_order_price(self):
-        return self.orderitem.dish_price * self.orderitem.dish_quantity
+        total_price = 0
+        for item in self.orderitem_set.all():
+            total_price += item.dish_price * item.dish_quantity
+        return total_price
 
 
 class OrderItem(models.Model):
-    order = models.OneToOneField(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, null=True, on_delete=models.SET_NULL)
     dish_price = models.DecimalField(max_digits=10, decimal_places=2)
     dish_name = models.CharField(max_length=250)
