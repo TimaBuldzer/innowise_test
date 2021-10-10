@@ -11,7 +11,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = orders_models.Order
         fields = '__all__'

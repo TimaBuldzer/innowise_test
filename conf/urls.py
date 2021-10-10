@@ -40,6 +40,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.restaurants.urls')),
     path('', include('apps.orders.urls')),
+    path('', include('apps.users.urls')),
     path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
