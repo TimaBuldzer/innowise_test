@@ -22,7 +22,7 @@ class OrderStatus(models.TextChoices):
 
 class Order(MPTTModel):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, null=True, on_delete=models.CASCADE)
     parent = TreeForeignKey('self', on_delete=models.CASCADE)
     status = models.CharField(max_length=25, default=OrderStatus.NEW, choices=OrderStatus.choices)
 

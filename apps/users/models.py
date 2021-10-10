@@ -28,3 +28,14 @@ class Cart(models.Model):
 
     def __str__(self):
         return f'{self.profile} cart'
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    dish = models.ForeignKey('restaurants.Dish', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'cart_items'
+
+    def __str__(self):
+        return f'{self.cart} : {self.dish}'
