@@ -22,6 +22,8 @@ class Order(models.Model):
     restaurant = models.ForeignKey(Restaurant, null=True, on_delete=models.CASCADE)
     status = models.CharField(max_length=25, default=OrderStatus.NEW, choices=OrderStatus.choices)
     courier = models.ForeignKey(Profile, related_name='courier_orders', null=True, on_delete=models.SET_NULL)
+    delivered_dt = models.DateTimeField()
+    created_dt = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'orders'

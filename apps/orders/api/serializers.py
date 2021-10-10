@@ -30,7 +30,7 @@ class OrderSerializer(serializers.ModelSerializer):
             order = self.create_order(profile, rest_id)
             for cart_item in profile.cart.cartitem_set.filter(dish__restaurant_id=rest_id):
                 self.create_order_item(order, cart_item)
-
+        # TODO send notifications via email
         return order
 
     @staticmethod
@@ -57,3 +57,4 @@ class OrderSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_total_price(obj):
         return obj.get_order_price()
+
