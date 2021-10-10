@@ -17,8 +17,20 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    dish = DishSerializer()
+    dish = serializers.SerializerMethodField()
+    dish_id = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = users_models.CartItem
         exclude = ['cart']
+
+    def create(self, validated_data):
+        cart = self.context.get('request').user.profile.cart
+        obj = users_models.CartItem.objects.create(
+            cart=cart,
+            dish_id=validated_data.get('dish_id')
+        )
+        return obj
+
+    def get_dish(self, obj):
+        return DishSerializer(obj.dish, read_only=True).data

@@ -9,3 +9,7 @@ class CartRetrieveApiView(RetrieveAPIView):
     def get_object(self):
         return self.request.user.profile.cart
 
+
+class CartItemCreateApiView(CreateAPIView):
+    queryset = users_models.CartItem
+    serializer_class = users_serializers.CartItemSerializer

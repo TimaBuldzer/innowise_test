@@ -136,3 +136,5 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'apps.restaurants.api.paginations.CustomPagination',
 }
+
+from .jwt_settings import *
