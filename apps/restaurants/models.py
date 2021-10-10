@@ -7,6 +7,7 @@ class Restaurant(models.Model):
     name = models.CharField(max_length=250)
     address = models.CharField(max_length=250)
     email = models.EmailField()
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'restaurants'
@@ -27,9 +28,11 @@ class Employee(models.Model):
 
 
 class Dish(models.Model):
+    image = models.ImageField(upload_to='restaurants/dishes/%Y/%m/%d', null=True, blank=True)
     name = models.CharField(max_length=250)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     price = models.DecimalField(decimal_places=2, max_digits=10)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'dishes'

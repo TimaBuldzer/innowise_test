@@ -5,7 +5,7 @@ from apps.restaurants import models as restaurant_models
 
 
 class DishListCreateApiView(ListCreateAPIView):
-    queryset = restaurant_models.Dish.objects.all()
+    queryset = restaurant_models.Dish.objects.filter(is_active=True)
     serializer_class = rest_serializers.DishSerializer
 
 
@@ -15,7 +15,7 @@ class DishRetrieveUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
 
 class RestaurantListCreateApiView(ListAPIView):
-    queryset = restaurant_models.Restaurant.objects.all()
+    queryset = restaurant_models.Restaurant.objects.filter(is_active=True)
     serializer_class = rest_serializers.RestaurantSerializer
 
 

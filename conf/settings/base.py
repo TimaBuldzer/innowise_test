@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'apps.users.apps.UsersConfig',
-    'apps.restaurants.apps.RestaurantsConfig'
+    'apps.restaurants.apps.RestaurantsConfig',
+    'apps.orders.apps.OrdersConfig',
 ]
 
 MIDDLEWARE = [
