@@ -33,7 +33,6 @@ class OrderSerializer(serializers.ModelSerializer):
             for cart_item in profile.cart.cartitem_set.filter(dish__restaurant_id=rest_id):
                 self.create_order_item(order, cart_item)
         profile.cart.clear_cart()
-        # TODO send notifications via email
         return order
 
     @staticmethod

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.restaurants.apps.RestaurantsConfig',
     'apps.orders.apps.OrdersConfig',
+    'apps.services.apps.ServicesConfig'
 ]
 
 MIDDLEWARE = [
@@ -137,4 +138,4 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'apps.restaurants.api.paginations.CustomPagination',
 }
 
-from .jwt_settings import *
+from .jwt_conf import *

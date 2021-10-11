@@ -4,8 +4,10 @@ import time
 from django.http import Http404
 
 from apps.restaurants.api.serializers import DishSerializer
+from apps.services.email_services import send_email_about_delivered_order
 from apps.users import models as users_models
 from apps.restaurants import models as restaurant_models
+from apps.orders import models as orders_models
 from rest_framework import serializers
 
 from conf.settings.constants import REPORT_EXPIRE_TIME
@@ -64,8 +66,10 @@ class ReportSerializer(serializers.ModelSerializer):
         depth = 1
 
     def create(self, validated_data):
-        order = validated_data.get('order')
+        order = orders_models.Order.objects.get(id=self.context.get('view').kwargs.get('pk'))
         self.check_if_time_expired(order)
+
+        send_email_about_delivered_order(order)
 
         return users_models.Report.objects.create(
             order=order,
