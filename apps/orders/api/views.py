@@ -32,7 +32,6 @@ class AssignCourierToOrderApiView(GenericAPIView):
         order.courier = request.user.profile
         order.status = orders_models.OrderStatus.ON_THE_WAY
         order.save(update_fields=['courier', 'status'])
-        # TODO send notifications via email
 
         return Response(status=200)
 
@@ -51,7 +50,6 @@ class ChangeOrderStatusToDeliveredApiView(GenericAPIView):
         order.status = orders_models.OrderStatus.DELIVERED
         order.delivered_dt = datetime.datetime.now()
         order.save(update_fields=['status'])
-        # TODO send email notification to user in which he/she can report this courier within 5 minutes
         return Response(status=200)
 
     def validate_request(self, order):

@@ -62,3 +62,4 @@ class OrderSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_total_price(obj):
         return obj.get_order_price()
+
