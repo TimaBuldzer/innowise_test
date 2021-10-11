@@ -29,10 +29,14 @@ class Cart(models.Model):
     def __str__(self):
         return f'{self.profile} cart'
 
+    def clear_cart(self):
+        self.cartitem_set.all().delete()
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     dish = models.ForeignKey('restaurants.Dish', on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField(default=1)
 
     class Meta:

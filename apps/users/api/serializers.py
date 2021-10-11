@@ -5,10 +5,12 @@ from django.http import Http404
 
 from apps.restaurants.api.serializers import DishSerializer
 from apps.users import models as users_models
+from apps.restaurants import models as restaurant_models
 from rest_framework import serializers
 
 from conf.settings.constants import REPORT_EXPIRE_TIME
 import pytz
+
 
 class CartSerializer(serializers.ModelSerializer):
     cart_items = serializers.SerializerMethodField()
@@ -33,10 +35,19 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         cart = self.context.get('request').user.profile.cart
+        dish = restaurant_models.Dish.objects.get(id=validated_data.get('dish_id'))
         obj = users_models.CartItem.objects.create(
             cart=cart,
-            dish_id=validated_data.get('dish_id')
+            dish=dish,
+            price=dish.get_price()
         )
+        if not dish.discount.is_applied and dish.discount.discount_type == restaurant_models.DiscountType.ONE_PLUS_ONE:
+            users_models.CartItem.objects.create(
+                cart=cart,
+                dish=dish,
+                price=0
+            )
+
         return obj
 
     def get_dish(self, obj):
@@ -54,12 +65,16 @@ class ReportSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         order = validated_data.get('order')
+        self.check_if_time_expired(order)
+
+        return users_models.Report.objects.create(
+            order=order,
+            reported_profile=order.courier
+        )
+
+    @staticmethod
+    def check_if_time_expired(order):
         order_date = time.mktime(order.delivered_dt.astimezone(pytz.timezone('Europe/Minsk')).timetuple())
         mins = (datetime.datetime.now().timestamp() - order_date) / 60
         if mins > REPORT_EXPIRE_TIME:
             raise Http404
-        report = users_models.Report.objects.create(
-            order=order,
-            reported_profile=order.courier
-        )
-        return report
