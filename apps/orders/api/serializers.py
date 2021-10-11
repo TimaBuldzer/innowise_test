@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from apps.orders import models as orders_models
+from apps.restaurants import models as restaurant_models
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -11,6 +12,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     order_item = serializers.SerializerMethodField()
     total_price = serializers.SerializerMethodField()
+    destination_address = serializers.CharField(required=False, write_only=True)
 
     class Meta:
         model = orders_models.Order
@@ -27,7 +29,7 @@ class OrderSerializer(serializers.ModelSerializer):
         restaurant_ids = profile.cart.cartitem_set.distinct('dish').values_list('dish__restaurant', flat=True)
 
         for rest_id in restaurant_ids:
-            order = self.create_order(profile, rest_id)
+            order = self.create_order(profile, rest_id, validated_data)
             for cart_item in profile.cart.cartitem_set.filter(dish__restaurant_id=rest_id):
                 self.create_order_item(order, cart_item)
         profile.cart.clear_cart()
@@ -35,10 +37,13 @@ class OrderSerializer(serializers.ModelSerializer):
         return order
 
     @staticmethod
-    def create_order(profile, rest_id):
+    def create_order(profile, rest_id, data):
+        restaurant = restaurant_models.Restaurant.objects.get(id=rest_id)
         return orders_models.Order.objects.create(
             profile=profile,
-            restaurant_id=rest_id
+            restaurant=restaurant,
+            source_address=restaurant.address,
+            destination_address=data.get('destination_address') if data.get('destination_address') else profile.address
         )
 
     @staticmethod
